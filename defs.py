@@ -16,7 +16,7 @@ def get_token():
     return r.json()
 
 
-def get_info(username):
+def get_info_user(username):
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -47,6 +47,43 @@ def get_info_map(id_map):
     return r.json()
 
 
+def create_message_for_user(data):
+    maps = best_maps(data.get("id"))
+    if len(maps) >= 3:
+        mess = f'User: {data.get("username")}\n' \
+               f'Current pp: {round(data.get("statistics").get("pp"))}\n' \
+               f'Total play time: {round(data.get("statistics").get("play_time") / 3600)} hours\n' \
+               f'Level: {data.get("statistics").get("level").get("current")}\n' \
+               f'Global Ranking: {data.get("statistics").get("global_rank")}\n' \
+               f'Best Scores: \n' \
+               f'{maps[0].get("beatmap").get("url")}\n' \
+               f'{maps[1].get("beatmap").get("url")}\n' \
+               f'{maps[2].get("beatmap").get("url")}\n'
+    else:
+        mess = f'User: {data.get("username")}\n' \
+               f'Current pp: {round(data.get("statistics").get("pp"))}\n' \
+               f'Total play time: {round(data.get("statistics").get("play_time") / 3600)} hours\n' \
+               f'Level: {data.get("statistics").get("level").get("current")}\n' \
+               f'Global Ranking: {data.get("statistics").get("global_rank")}\n' \
+               f'Best Scores: \n' \
+               f'Too many maps'
+    return mess
+
+
+def check_valid_user(data):
+    if 'error' in data:
+        return False
+    return True
+
+
+
+def create_message_for_map(id):
+    data = get_info_map(id)
+    mess = f'{data.get("beatmapset").get("title")}' \
+           f'{data.get("")}'
+
+
+
 def picture(avatar, banner):
     ban = Image.open(BytesIO(urllib.request.urlopen(banner).read()))
     av = Image.open(BytesIO(urllib.request.urlopen(avatar).read()))
@@ -56,4 +93,4 @@ def picture(avatar, banner):
 
 
 if __name__ == '__main__':
-    pprint(get_info_map('1483372'))
+    pprint(get_info_map('1486189'))
