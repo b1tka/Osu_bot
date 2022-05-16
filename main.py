@@ -15,9 +15,13 @@ dp.middleware.setup(LoggingMiddleware())
 
 @dp.message_handler(state='*', commands=['start'])
 async def start_command(message: types.Message):
-    await message.answer('Бот kar1Osu\n'
-                        'GitHub: https://github.com/b1tka/Osu_bot\n'
-                        'Основные команды - /help', reply_markup=kb)
+    await bot.send_photo(message.chat.id, 'https://i.imgur.com/q9nQfR1.jpeg', reply_markup=kb,
+                         caption=f'Привет {message.from_user.username} \n'
+                                 f'Вот что я умею:\n'
+                                 f'/Search_user - поиск пользователья по имени\n'
+                                 f'/Search_map_by_id - поиск карты по её id\n'
+                                 f'/Random_map - рандомная карта\n'
+                                 f'/back - вернуться обратно')
 
 
 @dp.message_handler(state='*', commands=['help'])
@@ -42,9 +46,8 @@ async def find_map_by_id(message: types.Message):
     await message.answer('Введите id карты', reply_markup=bc)
 
 
-
 @dp.message_handler(state='*', commands=['Random_map'])
-async def random_map(message:types.Message):
+async def random_map(message: types.Message):
     id = randrange(1232451, 2451235)
     data = defs.get_info_map(id)
     while defs.check_valid(data) is False:
@@ -65,7 +68,7 @@ async def back(message:types.Message):
 async def get_user(message: types.Message):
     data = defs.get_info_user(message.text)
     if defs.check_valid(data):
-        photo = defs.picture(avatar=data.get("avatar_url"), banner=data.get("cover_url"), data=data)
+        photo = defs.picture(avatar=data.get("avatar_url"), banner=data.get("cover_url"))
         await bot.send_photo(message.chat.id, photo, caption=defs.create_message_for_user(data),
                              reply_markup=bc)
     else:

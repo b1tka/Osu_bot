@@ -1,6 +1,5 @@
 import requests
-from pprint import pprint
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 from io import BytesIO
 import urllib
 
@@ -32,7 +31,8 @@ def best_maps(id_username):
         'Accept': 'application/json',
         'Authorization': f'Bearer {get_token().get("access_token")}'
     }
-    r = requests.get(f'https://osu.ppy.sh/api/v2/users/{id_username}/scores/best?include_fails=0&mode=osu&limit=3',
+    r = requests.get(f'https://osu.ppy.sh/api/v2/users/{id_username}'
+                     f'/scores/best?include_fails=0&mode=osu&limit=3',
                      headers=headers)
     return r.json()
 
@@ -79,25 +79,22 @@ def check_valid(data):
 
 
 def create_message_for_map(data):
-    mess = f'Map: {data.get("beatmapset").get("title")}\n' \
-           f'Creator: {data.get("beatmapset").get("creator")}\n' \
-           f'bpm: {data.get("bpm")}\n' \
-           f'Ranked: {"True" if data.get("beatmapset").get("ranked") == 1 else "False"}\n' \
-           f'Mode: {data.get("mode")}\n'\
-           f'Link: {data.get("url")}'
+    mess = f'Карта: {data.get("beatmapset").get("title")}\n' \
+           f'Создатель: {data.get("beatmapset").get("creator")}\n' \
+           f'Бпм: {data.get("bpm")}\n' \
+           f'Ранкед: {"True" if data.get("beatmapset").get("ranked") == 1 else "False"}\n' \
+           f'Мод: {data.get("mode")}\n'\
+           f'Ссылка на карту: {data.get("url")}'
     return mess
 
 
-def picture(avatar, banner, data):
+def picture(avatar, banner):
     ban = Image.open(BytesIO(urllib.request.urlopen(banner).read()))
     av = Image.open(BytesIO(urllib.request.urlopen(avatar).read()))
     ban.paste(av, (194, 122))
-    draw_text = ImageDraw.Draw(ban)
-    font = ImageFont.truetype('C:/Shrift/KyivTypeSans-VarGX.ttf', size=150)
-    draw_text.text((700, 125), text=data.get('username'), fill='#1C0606', font=font)
     ban.save('res.png')
     return open('res.png', 'rb')
 
 
 if __name__ == '__main__':
-    pprint(get_info_user('Slavick231'))
+   pass
